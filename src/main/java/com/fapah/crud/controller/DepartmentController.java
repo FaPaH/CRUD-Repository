@@ -32,7 +32,7 @@ public class DepartmentController {
             log.info("Adding department {}", department);
             return ResponseEntity.ok(departmentService.addDepartment(department));
         } catch (NestedRuntimeException e) {
-            log.warn("Error while adding department {}", department, e);
+            log.warn("Warn while adding department {}", department, e);
             throw new NullParameterException("One of the required parameters is null");
         }
     }

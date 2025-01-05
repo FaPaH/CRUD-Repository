@@ -38,10 +38,10 @@ public class DepartmentServiceImpl implements DepartmentService {
             log.info("Adding department {}", department);
             return departmentRepository.saveAndFlush(department);
         }  catch (DataAccessException e) {
-            log.warn("Error in adding department {}", department, e);
+            log.warn("Warn in adding department {}", department, e);
             throw new RuntimeException("ERROR in adding department " + department, e);
         } catch (RuntimeException e) {
-            log.warn("Unexpected error in addDepartment in DepartmentServiceImpl", e);
+            log.warn("Unexpected exception while adding department {}", department, e);
             throw new RuntimeException("Unexpected Error adding department", e);
         }
     }

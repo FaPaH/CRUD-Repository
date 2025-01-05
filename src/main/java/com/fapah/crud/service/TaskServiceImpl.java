@@ -36,7 +36,6 @@ public class TaskServiceImpl implements TaskService {
             log.info("Found {} tasks", tasks.size());
             return tasks;
         } catch (RuntimeException e) {
-            log.warn("Error in findAll in TaskServiceImpl", e);
             throw new RuntimeException("Uncaught Error in findAll in TaskServiceImpl", e);
         }
     }
@@ -47,7 +46,7 @@ public class TaskServiceImpl implements TaskService {
             log.info("Save task {}", task);
             return taskRepository.save(task);
         } catch (RuntimeException e) {
-            log.debug("Error while saving task {}", task, e);
+            log.debug("Warn while saving task {}", task, e);
             throw new RuntimeException("Uncaught Error in save in TaskServiceImpl", e);
         }
     }
@@ -69,7 +68,7 @@ public class TaskServiceImpl implements TaskService {
             log.warn("No such employee with id {} or task with id {}", employeeId, taskId);
             throw new NoSuchDataException("employee or task not found");
         } catch (RuntimeException e) {
-            log.warn("Unexpected Error while adding employee {} to task {}", employeeId, taskId, e);
+            log.warn("Unexpected exception while adding employee {} to task {}", employeeId, taskId, e);
             throw new RuntimeException("Unexpected Error adding employee to task", e);
         }
     }

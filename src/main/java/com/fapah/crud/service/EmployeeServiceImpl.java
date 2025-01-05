@@ -53,6 +53,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             log.warn("No department found with id {}", departmentId);
             throw new NoSuchDataException("Department not found");
         } catch (RuntimeException e) {
+            log.warn("Unexpected exception while adding employee {} with departmentID {}", employee, departmentId, e);
             throw new RuntimeException("Unexpected Error adding employee", e);
         }
     }
