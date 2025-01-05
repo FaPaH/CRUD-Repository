@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -25,26 +26,34 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public List<Employee> findAll() {
-        List<Employee> employees = employeeRepository.findAll();
-        if (employees.isEmpty()) {
-            throw new EmptyResultException("Department list is empty");
+        try {
+            List<Employee> employees = employeeRepository.findAll();
+            if (employees.isEmpty()) {
+                throw new EmptyResultException("Employee list is empty");
+            }
+            log.info("Found {} employees", employees.size());
+            return employees;
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Unexpected Error in findAll in EmployeeServiceImpl", e);
         }
-        log.info("Found {} employees", employees.size());
-        return employees;
     }
 
     @Transactional
     @Override
     public Employee addEmployee(Employee employee, long departmentId) {
+        try {
             Optional<Department> department = departmentRepository.findById(departmentId);
-            if (department.isPresent()) {
-                department.get().getEmployees().add(employee);
-                employee.setDepartment(department.get());
-                departmentRepository.save(department.get());
-            } else {
-                throw new NoSuchDataException("Department not found");
-            }
-            log.info("Added employee {}", employee);
+            log.info("Found department {} with id {}",department , departmentId);
+            department.get().getEmployees().add(employee);
+            employee.setDepartment(department.get());
+            log.info("Adding employee {}", employee);
+            departmentRepository.save(department.get());
             return employee;
+        } catch (NoSuchElementException e) {
+            log.warn("No department found with id {}", departmentId);
+            throw new NoSuchDataException("Department not found");
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Unexpected Error adding employee", e);
+        }
     }
 }
