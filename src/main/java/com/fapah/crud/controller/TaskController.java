@@ -31,7 +31,7 @@ public class TaskController {
             log.info("Adding task {} in addTask", task);
             return ResponseEntity.ok(taskService.save(task));
         } catch (DataAccessException e) {
-            log.warn("Error while adding task {}", task, e);
+            log.warn("Warn while adding task {}", task, e);
             throw new NullParameterException("One of the parameters is null.");
         }
     }
@@ -43,7 +43,7 @@ public class TaskController {
             log.info("Adding employee {} to task {}", employeeId, taskId);
             return ResponseEntity.ok(taskService.addEmployeeToTask(employeeId, taskId));
         } catch (DataAccessException e) {
-            log.warn("Error while adding employee {} to task {}", employeeId, taskId, e);
+            log.warn("Warn while adding employee {} to task {}", employeeId, taskId, e);
             throw new NullParameterException("One of the parameters is null.");
         }
     }

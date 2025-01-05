@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -29,7 +30,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         try {
             List<Employee> employees = employeeRepository.findAll();
             if (employees.isEmpty()) {
-                throw new EmptyResultException("Employee list is empty");
+                log.info("No department found");
+                return Collections.emptyList();
             }
             log.info("Found {} employees", employees.size());
             return employees;
@@ -53,6 +55,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             log.warn("No department found with id {}", departmentId);
             throw new NoSuchDataException("Department not found");
         } catch (RuntimeException e) {
+            log.warn("Unexpected exception while adding employee {} with departmentID {}", employee, departmentId, e);
             throw new RuntimeException("Unexpected Error adding employee", e);
         }
     }

@@ -9,6 +9,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -23,7 +24,8 @@ public class DepartmentServiceImpl implements DepartmentService {
         try {
             List<Department> departments = departmentRepository.findAll();
             if (departments.isEmpty()) {
-                throw new EmptyResultException("Department list is empty");
+                log.info("No department found");
+                return Collections.emptyList();
             }
             log.info("Found {} departments", departments.size());
             return departments;
@@ -38,10 +40,10 @@ public class DepartmentServiceImpl implements DepartmentService {
             log.info("Adding department {}", department);
             return departmentRepository.saveAndFlush(department);
         }  catch (DataAccessException e) {
-            log.warn("Error in adding department {}", department, e);
+            log.warn("Warn in adding department {}", department, e);
             throw new RuntimeException("ERROR in adding department " + department, e);
         } catch (RuntimeException e) {
-            log.warn("Unexpected error in addDepartment in DepartmentServiceImpl", e);
+            log.warn("Unexpected exception while adding department {}", department, e);
             throw new RuntimeException("Unexpected Error adding department", e);
         }
     }

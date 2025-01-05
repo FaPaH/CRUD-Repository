@@ -33,7 +33,7 @@ public class EmployeeController {
             log.info("Adding employee {} with departmentId {}", employee, departmentId);
             return ResponseEntity.ok(employeeService.addEmployee(employee, departmentId));
         } catch (DataAccessException e) {
-            log.warn("Error while adding employee {} with departmentId {}", employee, departmentId, e);
+            log.warn("Warn while adding employee {} with departmentId {}", employee, departmentId, e);
             throw new NullParameterException("One of the parameters is null.");
         }
     }
