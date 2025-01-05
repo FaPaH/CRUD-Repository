@@ -27,16 +27,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public List<Employee> findAll() {
         try {
-            log.info("Find all employees in EmployeeServiceImpl");
             List<Employee> employees = employeeRepository.findAll();
             if (employees.isEmpty()) {
-                log.debug("Throw EmptyResultException in findAll in EmployeeServiceImpl");
                 throw new EmptyResultException("Employee list is empty");
             }
             log.info("Found {} employees", employees.size());
             return employees;
         } catch (RuntimeException e) {
-            log.debug("Error in findAll in EmployeeServiceImpl", e);
             throw new RuntimeException("Unexpected Error in findAll in EmployeeServiceImpl", e);
         }
     }
@@ -45,7 +42,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Employee addEmployee(Employee employee, long departmentId) {
         try {
-            log.info("Calling addEmployee in EmployeeServiceImpl with department id {}", departmentId);
             Optional<Department> department = departmentRepository.findById(departmentId);
             log.info("Found department {} with id {}",department , departmentId);
             department.get().getEmployees().add(employee);
@@ -54,10 +50,9 @@ public class EmployeeServiceImpl implements EmployeeService {
             departmentRepository.save(department.get());
             return employee;
         } catch (NoSuchElementException e) {
-            log.debug("No department found with id {}", departmentId);
+            log.warn("No department found with id {}", departmentId);
             throw new NoSuchDataException("Department not found");
         } catch (RuntimeException e) {
-            log.debug("Unexpected error in addEmployee in EmployeeServiceImpl", e);
             throw new RuntimeException("Unexpected Error adding employee", e);
         }
     }

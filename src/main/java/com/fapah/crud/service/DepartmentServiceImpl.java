@@ -21,16 +21,13 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public List<Department> findAll() {
         try {
-            log.info("Calling findAll in DepartmentServiceImpl");
             List<Department> departments = departmentRepository.findAll();
             if (departments.isEmpty()) {
-                log.debug("Throw EmptyResultException in findAll in DepartmentServiceImpl");
                 throw new EmptyResultException("Department list is empty");
             }
             log.info("Found {} departments", departments.size());
             return departments;
         } catch (RuntimeException e) {
-            log.debug("Error in findAll in DepartmentServiceImpl", e);
             throw new RuntimeException("Unexpected Error in findAll in DepartmentServiceImpl", e);
         }
     }
@@ -41,10 +38,10 @@ public class DepartmentServiceImpl implements DepartmentService {
             log.info("Adding department {}", department);
             return departmentRepository.saveAndFlush(department);
         }  catch (DataAccessException e) {
-            log.debug("Error in adding department {}", department, e);
+            log.warn("Error in adding department {}", department, e);
             throw new RuntimeException("ERROR in adding department " + department, e);
         } catch (RuntimeException e) {
-            log.debug("Unexpected error in addDepartment in DepartmentServiceImpl", e);
+            log.warn("Unexpected error in addDepartment in DepartmentServiceImpl", e);
             throw new RuntimeException("Unexpected Error adding department", e);
         }
     }

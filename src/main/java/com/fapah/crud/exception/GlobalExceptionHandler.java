@@ -22,14 +22,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NullParameterException.class)
     public @ResponseBody ResponseEntity<ErrorResponse> handleNullParameterException(NullParameterException ex) {
-        log.warn(ex.getMessage());
+        log.error(ex.getMessage());
         return new ResponseEntity<>(new ErrorResponse(HttpStatus.NOT_ACCEPTABLE.value(), Instant.now(), ex.getMessage()),
                 HttpStatus.NOT_ACCEPTABLE);
     }
 
     @ExceptionHandler(NoSuchDataException.class)
     public @ResponseBody ResponseEntity<ErrorResponse> handleNoSuchDataException(NoSuchDataException ex) {
-        log.warn(ex.getMessage());
+        log.error(ex.getMessage());
         return new ResponseEntity<>(new ErrorResponse(HttpStatus.NOT_FOUND.value(), Instant.now(), ex.getMessage()),
                 HttpStatus.NOT_FOUND);
     }
@@ -37,7 +37,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     ResponseEntity<ErrorResponse> handleUncaughtException(WebRequest request, RuntimeException ex)
     {
-        log.warn("Handling uncaught controller exception for {}", request, ex);
+        log.error("Handling uncaught controller exception for {}", request, ex);
         return new ResponseEntity<>(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), Instant.now(), ex.getMessage()),
                 HttpStatus.INTERNAL_SERVER_ERROR);
     }

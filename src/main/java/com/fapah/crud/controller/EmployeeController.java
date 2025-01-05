@@ -23,17 +23,17 @@ public class EmployeeController {
 
     @GetMapping("/")
     public ResponseEntity<List<Employee>> getAllEmployees() {
-        log.info("Getting all employees in EmployeeController");
+        log.info("Getting all employees");
         return ResponseEntity.ok(employeeService.findAll());
     }
 
     @PostMapping("/add")
     public ResponseEntity<Employee> addEmployee(@RequestBody(required = true) Employee employee, @RequestParam(required = true) long departmentId) {
         try {
-            log.info("Adding employee {} in addEmployee in EmployeeController with departmentId {}", employee, departmentId);
+            log.info("Adding employee {} with departmentId {}", employee, departmentId);
             return ResponseEntity.ok(employeeService.addEmployee(employee, departmentId));
         } catch (DataAccessException e) {
-            log.debug("Error while adding employee {} with departmentId {}", employee, departmentId, e);
+            log.warn("Error while adding employee {} with departmentId {}", employee, departmentId, e);
             throw new NullParameterException("One of the parameters is null.");
         }
     }

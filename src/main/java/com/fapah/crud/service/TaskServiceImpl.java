@@ -28,28 +28,27 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<Task> findAll() {
         try {
-            log.info("Find all task in TaskServiceImpl");
             List<Task> tasks = taskRepository.findAll();
             if (tasks.isEmpty()) {
-                log.debug("Throw EmptyResultException in findAll in TaskServiceImpl");
+                log.warn("Task list is empty");
                 throw new EmptyResultException("Task list is empty");
             }
             log.info("Found {} tasks", tasks.size());
             return tasks;
         } catch (RuntimeException e) {
-            log.debug("Error in findAll in TaskServiceImpl", e);
-            throw new RuntimeException("Error in findAll in TaskServiceImpl", e);
+            log.warn("Error in findAll in TaskServiceImpl", e);
+            throw new RuntimeException("Uncaught Error in findAll in TaskServiceImpl", e);
         }
     }
 
     @Override
     public Task save(Task task) {
         try {
-            log.info("Save task {} in TaskServiceImpl", task);
+            log.info("Save task {}", task);
             return taskRepository.save(task);
         } catch (RuntimeException e) {
             log.debug("Error while saving task {}", task, e);
-            throw new RuntimeException("Error in save in TaskServiceImpl", e);
+            throw new RuntimeException("Uncaught Error in save in TaskServiceImpl", e);
         }
     }
 
@@ -58,17 +57,19 @@ public class TaskServiceImpl implements TaskService {
     public Task addEmployeeToTask(long employeeId, long taskId) {
         try {
             Optional<Employee> employee = employeeRepository.findById(employeeId);
+            log.info("Found employee {} with id {}",employee , employeeId);
             Optional<Task> task = taskRepository.findById(taskId);
+            log.info("Found task {} with id {}", task, taskId);
             task.get().getEmployees().add(employee.get());
             employee.get().setTask(task.get());
             taskRepository.save(task.get());
             log.info("Employee {} added to task {}", employeeId, taskId);
             return task.get();
         } catch (NoSuchElementException e) {
-            log.debug("No such employee with id {} or task with id {}", employeeId, taskId);
+            log.warn("No such employee with id {} or task with id {}", employeeId, taskId);
             throw new NoSuchDataException("employee or task not found");
         } catch (RuntimeException e) {
-            log.debug("Unexpected error in addEmployeeToTask in TaskServiceImpl", e);
+            log.warn("Unexpected Error while adding employee {} to task {}", employeeId, taskId, e);
             throw new RuntimeException("Unexpected Error adding employee to task", e);
         }
     }

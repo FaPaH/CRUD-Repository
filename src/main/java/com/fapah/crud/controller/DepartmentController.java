@@ -22,17 +22,17 @@ public class DepartmentController {
 
     @GetMapping("/")
     public ResponseEntity<List<Department>> getAllDepartments() {
-        log.info("Getting all departments in DepartmentController");
+        log.info("Getting all departments");
         return ResponseEntity.ok(departmentService.findAll());
     }
 
     @PostMapping("/add")
     public ResponseEntity<Department> addDepartment(@RequestBody(required = true) Department department) {
         try {
-            log.info("Adding department {} in addDepartment in DepartmentController", department);
+            log.info("Adding department {}", department);
             return ResponseEntity.ok(departmentService.addDepartment(department));
         } catch (NestedRuntimeException e) {
-            log.debug("Error while adding department {}", department, e);
+            log.warn("Error while adding department {}", department, e);
             throw new NullParameterException("One of the required parameters is null");
         }
     }

@@ -21,17 +21,17 @@ public class TaskController {
 
     @GetMapping("/")
     public ResponseEntity<List<Task>> getAllTasks() {
-        log.info("Getting all tasks in TaskController");
+        log.info("Getting all tasks");
         return ResponseEntity.ok(taskService.findAll());
     }
 
     @PostMapping("/add")
     public ResponseEntity<Task> addTask(@RequestBody(required = true) Task task) {
         try {
-            log.info("Adding task {} in addTask in TaskController", task);
+            log.info("Adding task {} in addTask", task);
             return ResponseEntity.ok(taskService.save(task));
         } catch (DataAccessException e) {
-            log.debug("Error while adding task {}", task, e);
+            log.warn("Error while adding task {}", task, e);
             throw new NullParameterException("One of the parameters is null.");
         }
     }
@@ -40,10 +40,10 @@ public class TaskController {
     public ResponseEntity<Task> addEmployeeToTask(@RequestParam(required = true)long employeeId,
                                                   @RequestParam(required = true) long taskId) {
         try {
-            log.info("Adding employee {} to task {} in TaskController", employeeId, taskId);
+            log.info("Adding employee {} to task {}", employeeId, taskId);
             return ResponseEntity.ok(taskService.addEmployeeToTask(employeeId, taskId));
         } catch (DataAccessException e) {
-            log.debug("Error while adding employee {} to task {}", employeeId, taskId, e);
+            log.warn("Error while adding employee {} to task {}", employeeId, taskId, e);
             throw new NullParameterException("One of the parameters is null.");
         }
     }
