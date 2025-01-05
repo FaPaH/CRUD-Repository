@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -25,26 +26,39 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public List<Employee> findAll() {
-        List<Employee> employees = employeeRepository.findAll();
-        if (employees.isEmpty()) {
-            throw new EmptyResultException("Department list is empty");
+        try {
+            log.info("Find all employees in EmployeeServiceImpl");
+            List<Employee> employees = employeeRepository.findAll();
+            if (employees.isEmpty()) {
+                log.debug("Throw EmptyResultException in findAll in EmployeeServiceImpl");
+                throw new EmptyResultException("Employee list is empty");
+            }
+            log.info("Found {} employees", employees.size());
+            return employees;
+        } catch (RuntimeException e) {
+            log.debug("Error in findAll in EmployeeServiceImpl", e);
+            throw new RuntimeException("Unexpected Error in findAll in EmployeeServiceImpl", e);
         }
-        log.info("Found {} employees", employees.size());
-        return employees;
     }
 
     @Transactional
     @Override
     public Employee addEmployee(Employee employee, long departmentId) {
+        try {
+            log.info("Calling addEmployee in EmployeeServiceImpl with department id {}", departmentId);
             Optional<Department> department = departmentRepository.findById(departmentId);
-            if (department.isPresent()) {
-                department.get().getEmployees().add(employee);
-                employee.setDepartment(department.get());
-                departmentRepository.save(department.get());
-            } else {
-                throw new NoSuchDataException("Department not found");
-            }
-            log.info("Added employee {}", employee);
+            log.info("Found department {} with id {}",department , departmentId);
+            department.get().getEmployees().add(employee);
+            employee.setDepartment(department.get());
+            log.info("Adding employee {}", employee);
+            departmentRepository.save(department.get());
             return employee;
+        } catch (NoSuchElementException e) {
+            log.debug("No department found with id {}", departmentId);
+            throw new NoSuchDataException("Department not found");
+        } catch (RuntimeException e) {
+            log.debug("Unexpected error in addEmployee in EmployeeServiceImpl", e);
+            throw new RuntimeException("Unexpected Error adding employee", e);
+        }
     }
 }

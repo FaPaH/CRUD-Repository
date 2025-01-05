@@ -1,6 +1,8 @@
 package com.fapah.crud.exception;
 
-public class NoSuchDataException extends RuntimeException {
+import java.util.NoSuchElementException;
+
+public class NoSuchDataException extends NoSuchElementException {
     public NoSuchDataException(String msg) {
         super(msg);
     }

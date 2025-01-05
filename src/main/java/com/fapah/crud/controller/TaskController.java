@@ -4,6 +4,8 @@ import com.fapah.crud.exception.NullParameterException;
 import com.fapah.crud.entity.Task;
 import com.fapah.crud.service.TaskService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,20 +14,24 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/task")
 @RequiredArgsConstructor
+@Slf4j
 public class TaskController {
 
     private final TaskService taskService;
 
     @GetMapping("/")
     public ResponseEntity<List<Task>> getAllTasks() {
+        log.info("Getting all tasks in TaskController");
         return ResponseEntity.ok(taskService.findAll());
     }
 
     @PostMapping("/add")
     public ResponseEntity<Task> addTask(@RequestBody(required = true) Task task) {
         try {
+            log.info("Adding task {} in addTask in TaskController", task);
             return ResponseEntity.ok(taskService.save(task));
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
+            log.debug("Error while adding task {}", task, e);
             throw new NullParameterException("One of the parameters is null.");
         }
     }
@@ -34,9 +40,11 @@ public class TaskController {
     public ResponseEntity<Task> addEmployeeToTask(@RequestParam(required = true)long employeeId,
                                                   @RequestParam(required = true) long taskId) {
         try {
+            log.info("Adding employee {} to task {} in TaskController", employeeId, taskId);
             return ResponseEntity.ok(taskService.addEmployeeToTask(employeeId, taskId));
-        } catch (Exception e) {
-            return ResponseEntity.status(500).build();
+        } catch (DataAccessException e) {
+            log.debug("Error while adding employee {} to task {}", employeeId, taskId, e);
+            throw new NullParameterException("One of the parameters is null.");
         }
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
 
 import java.time.Instant;
 
@@ -15,28 +16,30 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EmptyResultException.class)
     public @ResponseBody ResponseEntity<ErrorResponse> handleEmptyResultException(EmptyResultException ex) {
-        log.error(ex.getMessage());
+        log.warn(ex.getMessage());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @ExceptionHandler(NullParameterException.class)
     public @ResponseBody ResponseEntity<ErrorResponse> handleNullParameterException(NullParameterException ex) {
-        log.error(ex.getMessage());
+        log.warn(ex.getMessage());
         return new ResponseEntity<>(new ErrorResponse(HttpStatus.NOT_ACCEPTABLE.value(), Instant.now(), ex.getMessage()),
                 HttpStatus.NOT_ACCEPTABLE);
     }
 
     @ExceptionHandler(NoSuchDataException.class)
     public @ResponseBody ResponseEntity<ErrorResponse> handleNoSuchDataException(NoSuchDataException ex) {
-        log.error(ex.getMessage());
+        log.warn(ex.getMessage());
         return new ResponseEntity<>(new ErrorResponse(HttpStatus.NOT_FOUND.value(), Instant.now(), ex.getMessage()),
                 HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public @ResponseBody ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException ex) {
-        log.error(ex.getMessage());
-        return new ResponseEntity<>(new ErrorResponse(HttpStatus.NO_CONTENT.value(), Instant.now(), ex.getMessage()),
-                HttpStatus.I_AM_A_TEAPOT);
+    ResponseEntity<ErrorResponse> handleUncaughtException(WebRequest request, RuntimeException ex)
+    {
+        log.warn("Handling uncaught controller exception for {}", request, ex);
+        return new ResponseEntity<>(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), Instant.now(), ex.getMessage()),
+                HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
+
