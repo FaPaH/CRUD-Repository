@@ -9,6 +9,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -23,7 +24,8 @@ public class DepartmentServiceImpl implements DepartmentService {
         try {
             List<Department> departments = departmentRepository.findAll();
             if (departments.isEmpty()) {
-                throw new EmptyResultException("Department list is empty");
+                log.info("No department found");
+                return Collections.emptyList();
             }
             log.info("Found {} departments", departments.size());
             return departments;

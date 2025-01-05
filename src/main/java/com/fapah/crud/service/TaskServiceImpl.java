@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -30,8 +31,8 @@ public class TaskServiceImpl implements TaskService {
         try {
             List<Task> tasks = taskRepository.findAll();
             if (tasks.isEmpty()) {
-                log.warn("Task list is empty");
-                throw new EmptyResultException("Task list is empty");
+                log.info("No department found");
+                return Collections.emptyList();
             }
             log.info("Found {} tasks", tasks.size());
             return tasks;
